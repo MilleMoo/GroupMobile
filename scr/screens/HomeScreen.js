@@ -20,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
             </TouchableOpacity>
 
        
-            <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={() => navigation.navigate("Regis")}>
+            <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={() => navigation.navigate("Register")}>
                 <Text style={[styles.buttonText, styles.signUpButtonText]}>Sign up</Text>
             </TouchableOpacity>
 
@@ -82,4 +82,3 @@ const styles = StyleSheet.create({
 });
 
 export default HomeScreen;
-
