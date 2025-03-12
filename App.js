@@ -1,9 +1,10 @@
 import React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import HomeScreen from "./scr/screens/HomeScreen";
-import LoginScreen from "./scr/screens/LoginScreen";
-import RegisterScreen from "./scr/screens/RegisterScreen";
+import HomeScreen from "./src/screens/HomeScreen";
+import LoginScreen from "./src/screens/LoginScreen";
+import ProfileScreen from "./src/screens/ProfileScreen";
+import RegisForm from "./src/screens/RegisForm";
 
 const Stack = createStackNavigator()
 
@@ -23,8 +24,13 @@ const App = ()=>{
       />
       <Stack.Screen
       name= "Register"
-      component={RegisterScreen}
+      component={RegisForm}
       options={{ title:"Register Screen  "}}
+      />
+      <Stack.Screen
+      name= "Profile"
+      component={ProfileScreen}
+      options={{ title:"Profile Screen  "}}
       />
       </Stack.Navigator>
     </NavigationContainer>
