@@ -2,3 +2,6 @@ npm install express sqlite3 body-parser cors
 
 npm install express sqlite3 bcryptjs jsonwebtoken
 
+ipconfig
+
+POST http://10.36.16.112:5000/register
