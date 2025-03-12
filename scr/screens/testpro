@@ -1,3 +1,22 @@
+เพิ่มในbackend
+
+app.put("/update-name", (req, res) => {
+    const { username, newName } = req.body;
+
+    db.run(
+        `UPDATE users SET name = ? WHERE username = ?`,
+        [newName, username],
+        function (err) {
+            if (err) return res.status(500).send({ message: "Error updating name" });
+            res.send({ message: "Name updated successfully" });
+        }
+    );
+});
+
+
+
+
+โค้ด fontend
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TextInput, Switch, TouchableOpacity, Alert } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
