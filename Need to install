@@ -1,1 +1,3 @@
 npm install react-native-paper expo-linear-gradient
+npx expo install @expo/vector-icons
+npx expo install expo-image-picker
