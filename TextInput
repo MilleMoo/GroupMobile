@@ -1,3 +1,6 @@
+import Icon from "react-native-vector-icons/Feather";
+import Icon1 from "react-native-vector-icons/Fontisto";
+
 <View style = {styles.inputContainer}>
         <TextInput
             style = {[styles.button, errors.UserName && styles.inputError]} // เปลี่ยนสีเส้นขอบเมื่อมี error
