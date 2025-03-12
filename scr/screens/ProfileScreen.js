@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, Image, TextInput, Switch, TouchableOpacity, Alert } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
+import { MaterialIcons } from "@expo/vector-icons"; // ใช้ไอคอนปากกา
 
 const ProfileScreen = () => {
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [name, setName] = useState("Red Hulk");
-    const [username, setUsername] = useState("@General_Ross");
+    const [username, setUsername] = useState("general.ross@example.com"); // Demo email
     const [profileImage, setProfileImage] = useState("https://cdn.marvel.com/content/1x/349red_com_crd_01.png");
+    const [isEditing, setIsEditing] = useState(false);
 
     const toggleSwitch = () => setIsDarkMode(!isDarkMode);
 
@@ -42,22 +44,33 @@ const ProfileScreen = () => {
                 <Text style={styles.editText}>Edit Photo</Text>
             </TouchableOpacity>
 
-            {/* Editable Name & Username */}
+            {/* Editable Name */}
             <View style={[styles.profileCard, isDarkMode ? styles.darkCard : styles.lightCard]}>
-                <TextInput
-                    style={[styles.input, isDarkMode ? styles.darkText : styles.lightText]}
-                    value={name}
-                    onChangeText={setName}
-                    placeholder="Enter name"
-                    placeholderTextColor={isDarkMode ? "#aaa" : "#555"}
-                />
-                <TextInput
-                    style={[styles.input, isDarkMode ? styles.darkText : styles.lightText]}
-                    value={username}
-                    onChangeText={setUsername}
-                    placeholder="Enter username"
-                    placeholderTextColor={isDarkMode ? "#aaa" : "#555"}
-                />
+                <View style={styles.nameContainer}>
+                    {isEditing ? (
+                        <TextInput
+                            style={[styles.input, isDarkMode ? styles.darkText : styles.lightText]}
+                            value={name}
+                            onChangeText={setName}
+                            placeholder="Enter name"
+                            placeholderTextColor={isDarkMode ? "#aaa" : "#555"}
+                            autoFocus
+                            onBlur={() => setIsEditing(false)}
+                        />
+                    ) : (
+                        <TouchableOpacity style={styles.nameRow} onPress={() => setIsEditing(true)}>
+                            <Text style={[styles.input, isDarkMode ? styles.darkText : styles.lightText]}>
+                                {name}
+                            </Text>
+                            <MaterialIcons name="edit" size={20} color={isDarkMode ? "#aaa" : "#555"} />
+                        </TouchableOpacity>
+                    )}
+                </View>
+
+                {/* Email (Demo) */}
+                <Text style={[styles.username, isDarkMode ? styles.darkText : styles.lightText]}>
+                    {username}
+                </Text>
             </View>
         </View>
     );
@@ -107,20 +120,32 @@ const styles = StyleSheet.create({
     darkCard: {
         backgroundColor: "#1e1e1e",
     },
+    nameContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        width: "100%",
+    },
+    nameRow: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
     input: {
         fontSize: 18,
         fontWeight: "bold",
         textAlign: "center",
-        borderBottomWidth: 1,
-        width: "100%",
-        marginVertical: 5,
+        flex: 1,
+    },
+    username: {
+        fontSize: 16,
+        color: "gray",
+        marginTop: 5,
     },
     lightText: {
         color: "#000",
     },
     darkText: {
         color: "#fff",
-        borderBottomColor: "#444",
     },
 });
 
