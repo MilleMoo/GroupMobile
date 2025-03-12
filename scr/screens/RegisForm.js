@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Alert, ImageBackground } from
 import { TextInput } from "react-native-gesture-handler";
 import Icon from "react-native-vector-icons/Feather";
 import Icon1 from "react-native-vector-icons/Fontisto";
+import { registerUser } from "../service/api";
 
 const RegisForm = ({navigation}) => {
     const [UserName, setUserName] = useState("")
@@ -14,6 +15,9 @@ const RegisForm = ({navigation}) => {
         Email: "",
         Password: "",
     })
+    const userData = {
+        Username: UserName,
+    };
 
 const handleCheck = (field, value) => {
         switch (field) {
@@ -74,6 +78,19 @@ const chackAll = () => {
         return true;
     }
     return false; // ถ้ามี error จะไม่สามารถทำการสมัครได้
+};
+
+const handleRegister = async () => {
+    try {
+        if (chackAll()){
+            await registerUser(UserName,Email,Password)
+            console.log(UserName,Email,Password)
+            console.log(userData)
+            navigation.navigate("Profile", { user: userData })
+        }
+    } catch (error) {
+        console.error("Error: ", error.message)
+    }
 };
 
 // const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8c648ee70e4cf077.jpg";
@@ -141,11 +158,7 @@ const chackAll = () => {
         </View>
 
         <TouchableOpacity
-             onPress={() => {
-                if (chackAll()){
-                    navigation.navigate("Profile")
-                }
-            }}
+            onPress={handleRegister}
             style = {[styles.buttonRegis, { backgroundColor: "rgba(249, 255, 249, 0.25)"}]}
         >
             <Text style = {styles.buttonText}>Sign Up</Text>
