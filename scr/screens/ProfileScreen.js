@@ -101,11 +101,13 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderWidth: 2,
         borderColor: "#ccc",
+        marginRight: 20
     },
     editText: {
         color: "#007bff",
         marginBottom: 10,
-        textAlign: "center"
+        textAlign: "center",
+        marginRight: 25
     },
     profileCard: {
         alignItems: "center",
