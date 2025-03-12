@@ -3,17 +3,23 @@ import { View, Text, StyleSheet, TextInput, Button, Alert,TouchableOpacity } fro
 import axios from "axios";
 import Icon from "react-native-vector-icons/Feather";
 import Icon1 from "react-native-vector-icons/Fontisto";
+import { LoginUser } from "../service/api";
+import { EditUserName } from "../service/api";
 
 
 const LoginScreen = ({ navigation }) => {
     const [Username, setUsername] = useState("");
     const [Password, setPassword] = useState("");
+    const userData = {
+        Username: Username,
+        password: Password,
+    };
 
     const handleLogin = async () => {
         try {
             const response = await LoginUser(Username, Password);
             Alert.alert("Login Successful", `Token: ${response}`);
-            navigation.navigate("Home");
+            navigation.navigate("Profile", { user: userData });
 
         } catch (error) {
             Alert.alert("login Failed!", error.message)
