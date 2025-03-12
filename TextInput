@@ -1,0 +1,55 @@
+<View style = {styles.inputContainer}>
+        <TextInput
+            style = {[styles.button, errors.UserName && styles.inputError]} // เปลี่ยนสีเส้นขอบเมื่อมี error
+            placeholder = {errors.UserName ? errors.UserName : "Full Name"} // ถ้ามี error ให้ขึ้นข้อความแทน
+            placeholderTextColor={errors.UserName ? "red" : "white"} // ถ้ามี error ให้เปลี่ยนเป็นสีแดง
+            value = {UserName}
+            onChangeText = {(newValue) => handleCheck("Username", newValue)}
+            onBlur = {() => validateField("UserName", UserName)}
+        />
+        <Icon name = "user" size = {20} color = "white" style = {styles.iconemail}/>    
+        </View>
+
+
+   
+    button: {
+        width: "100%",
+        borderRadius: 5,
+        marginVertical: "15",
+        backgroundColor: "rgba(240, 233, 233, 0.25)", // ทำให้โปร่งใส่
+    },
+    buttonText: {
+        color: "white",
+        fontSize: 16,
+        fontWeight: 'bold',
+        textAlign:'center',
+    },
+    buttonRegis: {
+        paddingVertical: 15, // เพิ่ม ระยะห่างด้านบน-ล่างให้มันเท่ากัน paddingTop กับ paddingButton
+        paddingHorizontal: 20, // เพิ่ม ระยะห่างซ้าย-ขวาให้มันเท่ากัน paddingRight กับ paddingLeft
+        borderRadius: 25, //ทำให้เป็นกลม ๆ 
+        marginVertical: 5, // เพิ่ม ระยะห่างด้านบน-ล่างให้มันเท่ากัน marginTop กับ marginButton 1
+        width: "40%",
+        alignSelf: "center",
+        backgroundColor: "rgba(43, 175, 43, 0.5)", // ทำให้โปร่งใส่
+    },
+    error:{
+        color: "red",
+        marginVertical: 5,
+    },
+    inputContainer: {
+        flexDirection: "row",
+        alignItems: "center",
+    },
+    icon: {
+        position: "absolute",
+        left: 340,
+    },
+    iconemail: {
+        position: "absolute",
+        left: 340,
+    },
+    inputError: {
+        borderColor: "red", // เปลี่ยนเส้นขอบเป็นสีแดง
+        borderWidth: 1,
+    }
