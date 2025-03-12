@@ -70,11 +70,8 @@ const chackAll = () => {
 const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8c648ee70e4cf077.jpg";
 
     return (
-        <ImageBackground
-            source = {{ uri: backgroundImageUri }} 
-            style = {styles.container}
-            resizeMode = "cover"
-        >
+        <View style={styles.container}>
+
             <Text style = {styles.headers}>Create Your Account</Text>
         
         <View style = {styles.inputContainer}>
@@ -130,7 +127,7 @@ const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8
         <TouchableOpacity
              onPress={() => {
                 if (chackAll()){
-                    navigation.navigate("Msgs")
+                    navigation.navigate("Profile")
                 }
             }}
             style = {[styles.buttonRegis, { backgroundColor: "rgba(249, 255, 249, 0.25)"}]}
@@ -141,13 +138,12 @@ const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8
 <View style={styles.signInContainer}>
     <Text style={styles.signInText}>Already have an account?</Text>
         <View style={styles.signInContainer1}>
-        <TouchableOpacity onPress={() => navigation.navigate("SignIn")}>
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
                 <Text style = {styles.signInButton}>Sign in</Text>
         </TouchableOpacity>
         </View>
 </View>
-
-    </ImageBackground>
+        </View>
     )
 }
 
@@ -155,6 +151,7 @@ const styles = StyleSheet.create({
     container : {
         flex: 1,
         padding: 20,
+        backgroundColor: "black"
     },
     headers: {
         fontSize: 34,
