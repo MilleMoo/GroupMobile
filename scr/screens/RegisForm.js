@@ -40,9 +40,15 @@ const validateField = (field, value) => {
         case "UserName":
             if (!value) error = "กรุณากรอกชื่อผู้ใช้";
             break;
-        case "Email":
-            if (!value) error = "กรุณากรอกอีเมล";
-            break;
+            case "Email":
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                const phoneRegex = /^[0-9]{10}$/; // ตรวจสอบเบอร์โทรศัพท์ 10 หลัก
+                if (!value) {
+                    error = "กรุณากรอกอีเมลหรือเบอร์โทร";
+                } else if (emailRegex.test(value) === false && phoneRegex.test(value) === false) {
+                    error = "กรุณากรอกอีเมลหรือเบอร์โทรที่ถูกต้อง";
+                }
+                break;
         case "Password":
             if (!value) error = "กรุณากรอกรหัสผ่าน";
             break;
@@ -62,12 +68,15 @@ const chackAll = () => {
     const emailCheck = validateField('Email', Email);
     const passwordCheck = validateField('Password', Password);
     const confirmPasswordCheck = validateField('ConfirPassword', ConfirmPassword);
-    if(!usernameCheck && !emailCheck && !passwordCheck )
-        Alert.alert("Register:", "SUCKSEED!!");
-    return true
+
+    if (!usernameCheck && !emailCheck && !passwordCheck && !confirmPasswordCheck) {
+        Alert.alert("Register:", "SUCCESS!!");
+        return true;
+    }
+    return false; // ถ้ามี error จะไม่สามารถทำการสมัครได้
 };
 
-const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8c648ee70e4cf077.jpg";
+// const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8c648ee70e4cf077.jpg";
 
     return (
         <View style={styles.container}>
@@ -86,17 +95,24 @@ const backgroundImageUri = "https://i.pinimg.com/736x/4c/99/3d/4c993d398afa2c5c8
         <Icon name = "user" size = {20} color = "white" style = {styles.iconemail}/>    
         </View>
 
-        <View style = {styles.inputContainer}>
-        <TextInput
-            style = {[styles.button, errors.Email && styles.inputError]} // เปลี่ยนสีเส้นขอบเมื่อมี error
-            placeholder = {errors.Email ? errors.Email : "Phone or Email"} // ถ้ามี error ให้ขึ้นข้อความแทน
-            placeholderTextColor = {errors.Email ? "red" : "white"} // ถ้ามี error ให้เปลี่ยนเป็นสีแดง
-            value = {Email}
-            onChangeText = {(newValue) => handleCheck("Email", newValue)}
-            onBlur = {() => validateField("Email", Email)}
-        />
-         <Icon1 name = "email" size = {20} color = "white" style = {styles.iconemail}/>
-        </View>
+    <View style={styles.inputContainer}>
+    <TextInput
+        style={[styles.button, errors.Email && styles.inputError]} // เปลี่ยนสีเส้นขอบเมื่อมี error
+        placeholder={errors.Email ? "" : "Phone or Email"} // ถ้ามี error ให้ขึ้นข้อความแทน
+        placeholderTextColor="white"
+        value={Email}
+        onChangeText={(newValue) => {
+            handleCheck("Email", newValue);
+            validateField("Email", newValue);
+        }}
+    />
+    <Icon1 name = "email" size={20} color = "white" style={styles.iconemail} />
+    
+    {/* แสดงข้อความผิดพลาดแยกต่างหาก */}
+    {errors.Email ? (
+        <Text style={styles.errorText}>{errors.Email}</Text>
+    ) : null}
+</View>
 
         <View style = {styles.inputContainer}>
         <TextInput
