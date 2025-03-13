@@ -15,7 +15,8 @@ db.run(`CREATE TABLE IF NOT EXISTS users(
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT UNIQUE,
     email TEXT UNIQUE,
-    password TEXT
+    password TEXT,
+    Bio TEXT
     )`);
 
 app.post("/register", async (req, res) => {
@@ -90,6 +91,27 @@ app.get("/get-user", (req, res) => {
     });
 });
 
-
+app.put("/update-Bio", (req, res) => {
+    const { username, bio } = req.body;
+  
+    if (!username || !bio) {
+      return res.status(400).send({ message: "Username and bio are required" });
+    }
+  
+    console.log("Updating bio for user:", username, "with bio:", bio);  // เพิ่มคำสั่งนี้เพื่อดูข้อมูล
+    db.run(
+      `UPDATE users SET Bio = ? WHERE username = ?`,
+      [bio, username],
+      function (err) {
+        if (err) {
+          console.error("Database error:", err);
+          return res.status(500).send({ message: "Error updating bio" });
+        }
+        res.send({ message: "Bio updated successfully" });
+      }
+    );
+  });
+  
+  
 
 app.listen(5000, () => console.log("Server running on port 5000"));
