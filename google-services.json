@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "126654068384",
+    "project_id": "mobilej-5f4de",
+    "storage_bucket": "mobilej-5f4de.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:126654068384:android:2de1627cb2c1b7e9e1fbc5",
+        "android_client_info": {
+          "package_name": "com.android.library"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAo0621TFCrpHwgJDXYGDAAybG4Ae06ZCQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
