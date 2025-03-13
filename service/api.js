@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://192.168.1.35:5000";
+const API_URL = "http://10.36.17.103:5000";
 
 export const LoginUser = async (username,password) => {
     try {
@@ -64,3 +64,19 @@ export const registerUser = async (username, email,password) => {
       throw new Error(error.response?.data?.message || "Error registering user");
     }
   };
+
+  export const updateBioInDatabase = async (username, bio) => {
+    try {
+      console.log("Updating bio with:", username, bio); // เพิ่มคำสั่งนี้เพื่อตรวจสอบว่าได้ข้อมูลถูกต้อง
+      const response = await axios.put(`${API_URL}/update-Bio`, {
+        username,  // ส่ง username
+        bio        // ส่ง bio
+      });
+      return response.data;  // คืนค่าข้อมูลที่ได้จากเซิร์ฟเวอร์
+    } catch (error) {
+      console.error("Error updating bio:", error);  // ตรวจสอบข้อผิดพลาด
+      throw new Error(error.response?.data?.message || "Error updating bio");
+    }
+  };
+  
+  
