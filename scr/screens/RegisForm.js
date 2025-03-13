@@ -44,52 +44,54 @@ const validateField = (field, value) => {
         case "UserName":
             if (!value) error = "กรุณากรอกชื่อผู้ใช้";
             break;
-            case "Email":
-                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-                const phoneRegex = /^[0-9]{10}$/; // ตรวจสอบเบอร์โทรศัพท์ 10 หลัก
-                if (!value) {
-                    error = "กรุณากรอกอีเมลหรือเบอร์โทร";
-                } else if (emailRegex.test(value) === false && phoneRegex.test(value) === false) {
-                    error = "กรุณากรอกอีเมลหรือเบอร์โทรที่ถูกต้อง";
-                }
-                break;
+        case "Email":
+            const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            const phoneRegex = /^[0-9]{10}$/;
+            if (!value) {
+                error = "กรุณากรอกอีเมลหรือเบอร์โทร";
+            } else if (!emailRegex.test(value) && !phoneRegex.test(value)) {
+                error = "กรุณากรอกอีเมลหรือเบอร์โทรที่ถูกต้อง";
+            }
+            break;
         case "Password":
             if (!value) error = "กรุณากรอกรหัสผ่าน";
             break;
         case "ConfirmPassword":
-            if (value !== Password) error = "รหัสผ่านไม่ตรงกัน";
+            if (!value) {
+                error = "กรุณากรอกรหัสผ่านอีกครั้ง";
+            } else if (value !== Password) {
+                error = "รหัสผ่านไม่ตรงกัน";
+            }
             break;
         default:
             break;
     }
-
     setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
     return error;
 };
 
-const chackAll = () => {
-    const usernameCheck = validateField('UserName', UserName);
-    const emailCheck = validateField('Email', Email);
-    const passwordCheck = validateField('Password', Password);
-    const confirmPasswordCheck = validateField('ConfirPassword', ConfirmPassword);
+const checkAll = () => {
+    const usernameCheck = validateField("UserName", UserName);
+    const emailCheck = validateField("Email", Email);
+    const passwordCheck = validateField("Password", Password);
+    const confirmPasswordCheck = validateField("ConfirmPassword", ConfirmPassword);
 
     if (!usernameCheck && !emailCheck && !passwordCheck && !confirmPasswordCheck) {
         Alert.alert("Register:", "SUCCESS!!");
         return true;
     }
-    return false; // ถ้ามี error จะไม่สามารถทำการสมัครได้
+    Alert.alert("Register Failed")
+    return false;
 };
 
 const handleRegister = async () => {
     try {
-        if (chackAll()){
-            await registerUser(UserName,Email,Password)
-            console.log(UserName,Email,Password)
-            console.log(userData)
-            navigation.navigate("Profile", { user: userData })
+    if (checkAll()) {
+            await registerUser(UserName, Email, Password);
+            navigation.navigate("Profile", { user: userData });
         }
     } catch (error) {
-        console.error("Error: ", error.message)
+        console.error("Error: ", error.message);
     }
 };
 
