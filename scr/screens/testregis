@@ -1,0 +1,150 @@
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { TextInput } from "react-native-gesture-handler";
+import Icon from "react-native-vector-icons/Feather";
+import Icon1 from "react-native-vector-icons/Fontisto";
+import { registerUser } from "../service/api";
+
+const RegisForm = ({ navigation }) => {
+    const [UserName, setUserName] = useState("");
+    const [Email, setEmail] = useState("");
+    const [Password, setPassword] = useState("");
+    const [ConfirmPassword, setConfirmPassword] = useState("");
+    const [errors, setErrors] = useState({});
+
+    const handleCheck = (field, value) => {
+        setErrors((prevErrors) => ({ ...prevErrors, [field]: "" }));
+        if (field === "UserName") setUserName(value);
+        if (field === "Email") setEmail(value);
+        if (field === "Password") setPassword(value);
+        if (field === "ConfirmPassword") setConfirmPassword(value);
+    };
+
+    const validateField = (field, value) => {
+        let error = "";
+        switch (field) {
+            case "UserName":
+                if (!value) error = "กรุณากรอกชื่อผู้ใช้";
+                break;
+            case "Email":
+                const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                const phoneRegex = /^[0-9]{10}$/;
+                if (!value) {
+                    error = "กรุณากรอกอีเมลหรือเบอร์โทร";
+                } else if (!emailRegex.test(value) && !phoneRegex.test(value)) {
+                    error = "กรุณากรอกอีเมลหรือเบอร์โทรที่ถูกต้อง";
+                }
+                break;
+            case "Password":
+                if (!value) error = "กรุณากรอกรหัสผ่าน";
+                break;
+            case "ConfirmPassword":
+                if (!value) {
+                    error = "กรุณากรอกรหัสผ่านอีกครั้ง";
+                } else if (value !== Password) {
+                    error = "รหัสผ่านไม่ตรงกัน";
+                }
+                break;
+            default:
+                break;
+        }
+        setErrors((prevErrors) => ({ ...prevErrors, [field]: error }));
+        return error;
+    };
+
+    const checkAll = () => {
+        const usernameCheck = validateField("UserName", UserName);
+        const emailCheck = validateField("Email", Email);
+        const passwordCheck = validateField("Password", Password);
+        const confirmPasswordCheck = validateField("ConfirmPassword", ConfirmPassword);
+
+        if (!usernameCheck && !emailCheck && !passwordCheck && !confirmPasswordCheck) {
+            Alert.alert("Register:", "SUCCESS!!");
+            return true;
+        }
+        return false;
+    };
+
+    const handleRegister = async () => {
+        if (checkAll()) {
+            try {
+                await registerUser(UserName, Email, Password);
+                navigation.navigate("Profile", { user: { Username: UserName } });
+            } catch (error) {
+                console.error("Error: ", error.message);
+            }
+        }
+    };
+
+    return (
+        <View style={styles.container}>
+            <Text style={styles.headers}>Create Your Account</Text>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={[styles.button, errors.UserName && styles.inputError]}
+                    placeholder={errors.UserName || "Full Name"}
+                    placeholderTextColor={errors.UserName ? "red" : "white"}
+                    value={UserName}
+                    onChangeText={(value) => handleCheck("UserName", value)}
+                    onBlur={() => validateField("UserName", UserName)}
+                />
+                <Icon name="user" size={20} color="white" style={styles.icon} />
+            </View>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={[styles.button, errors.Email && styles.inputError]}
+                    placeholder={errors.Email || "Phone or Email"}
+                    placeholderTextColor="white"
+                    value={Email}
+                    onChangeText={(value) => handleCheck("Email", value)}
+                    onBlur={() => validateField("Email", Email)}
+                />
+                <Icon1 name="email" size={20} color="white" style={styles.icon} />
+            </View>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={[styles.button, errors.Password && styles.inputError]}
+                    placeholder={errors.Password || "Password"}
+                    placeholderTextColor={errors.Password ? "red" : "white"}
+                    value={Password}
+                    onChangeText={(value) => handleCheck("Password", value)}
+                    onBlur={() => validateField("Password", Password)}
+                    secureTextEntry
+                />
+                <Icon name="lock" size={20} color="white" style={styles.icon} />
+            </View>
+
+            <View style={styles.inputContainer}>
+                <TextInput
+                    style={[styles.button, errors.ConfirmPassword && styles.inputError]}
+                    placeholder={errors.ConfirmPassword || "Confirm Password"}
+                    placeholderTextColor={errors.ConfirmPassword ? "red" : "white"}
+                    value={ConfirmPassword}
+                    onChangeText={(value) => handleCheck("ConfirmPassword", value)}
+                    onBlur={() => validateField("ConfirmPassword", ConfirmPassword)}
+                    secureTextEntry
+                />
+                <Icon name="lock" size={20} color="white" style={styles.icon} />
+            </View>
+
+            <TouchableOpacity onPress={handleRegister} style={styles.buttonRegis}>
+                <Text style={styles.buttonText}>Sign Up</Text>
+            </TouchableOpacity>
+        </View>
+    );
+};
+
+const styles = StyleSheet.create({
+    container: { flex: 1, padding: 20, backgroundColor: "black" },
+    headers: { fontSize: 34, fontWeight: "bold", alignSelf: "center", color: "white", marginBottom: 80 },
+    button: { width: "100%", borderRadius: 5, backgroundColor: "rgba(240, 233, 233, 0.25)", color: "white", padding: 10 },
+    buttonRegis: { paddingVertical: 15, borderRadius: 25, marginVertical: 30, width: "40%", backgroundColor: "rgba(43, 175, 43, 0.5)", alignSelf: "center" },
+    buttonText: { color: "white", fontSize: 16, fontWeight: "bold", textAlign: "center" },
+    inputError: { borderColor: "red", borderWidth: 1 },
+    icon: { position: "absolute", right: 10 },
+});
+
+export default RegisForm;
