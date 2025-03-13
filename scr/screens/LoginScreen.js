@@ -44,9 +44,10 @@ const LoginScreen = ({ navigation }) => {
         <View style = {style.inputContainer}>
                 <TextInput
                     style = {style.button} // เปลี่ยนสีเส้นขอบเมื่อมี error
-                    placeholder = "Username" // ถ้ามี error ให้ขึ้นข้อความแทน
+                    placeholder = "Password" // ถ้ามี error ให้ขึ้นข้อความแทน
                     value = {Password}
                     onChangeText = {setPassword}
+                    secureTextEntry
                 />
             <Icon name = "lock" size = {20} color = "white" style = {style.iconemail}/>    
         </View>

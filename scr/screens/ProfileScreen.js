@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TextInput, Switch, TouchableOpacity, Alert } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from "@expo/vector-icons";
-import { updateBioInDatabase, GetUserName } from "../../service/Api"; // Import API
+import { updateBioInDatabase, GetUserName, updateProfileImage} from "../service/api"; // Import API
 import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
+import { useFocusEffect } from "@react-navigation/native";
 
 const ProfileScreen = ({ route }) => {
     const { user } = route.params || {}; 
@@ -22,10 +23,15 @@ const ProfileScreen = ({ route }) => {
                 setIsDarkMode(JSON.parse(storedMode)); // Set the mode based on the stored value
             }
         };
-
         loadDarkMode();
         fetchUserData();
     }, []);
+
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchUserData(); 
+        }, [username])
+    );
 
     useEffect(() => {
         // Save dark mode preference to AsyncStorage
@@ -46,6 +52,7 @@ const ProfileScreen = ({ route }) => {
                 setName(data.username);
                 setEmail(data.email);
                 setBio(data.Bio);
+                setProfileImage(data.profileImage); 
             }
         } catch (error) {
             console.error("Fetch error:", error);
@@ -54,31 +61,46 @@ const ProfileScreen = ({ route }) => {
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (status !== 'granted') {
-            Alert.alert("Permission Denied", "We need access to your photos to upload an image.");
-            return;
+        if (status !== "granted") {
+            Alert.alert(
+                "Permission Denied",
+                "We need access to your photos to upload an image."
+            );
+        return;
         }
-
+    
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
         });
-
+    
         if (!result.canceled) {
-            setProfileImage(result.assets[0].uri);
+            const newImage = result.assets[0].uri;
+            setProfileImage(newImage); // ✅ เปลี่ยนรูปใน UI ทันที
+            await updateUserProfileImage(newImage); // ✅ บันทึกลงฐานข้อมูล
         }
     };
 
-    const [bio, setBio] = useState("");  // Bio State
+    const updateUserProfileImage = async (newImage) => {
+        try {
+            await updateProfileImage(username, newImage); 
+            Alert.alert("Success", "Profile image updated!");
+        } catch (error) {
+            console.error("Update profile image error:", error);
+            Alert.alert("Error", "Could not update profile image");
+        }
+    };
+
+    const [bio, setBio] = useState("");  
     const [isEditingBio, setIsEditingBio] = useState(false);
 
     const updateBio = async () => {
         try {
-            const response = await updateBioInDatabase(username, bio); // ส่ง username และ bio ไปที่ API
+            const response = await updateBioInDatabase(username, bio);
             if (response.message === "Bio updated successfully") {
-                setIsEditingBio(false); // ปิดโหมดการแก้ไข
+                setIsEditingBio(false);
                 Alert.alert("Success", "Bio updated successfully!");
             } else {
                 throw new Error('Error updating bio');

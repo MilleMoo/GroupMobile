@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
-import MyButton from "./MyButton";
+import MyButton from "../component/MyButton";
 import Entypo from '@expo/vector-icons/Entypo';
 
 const HomeScreen = ({ navigation }) => {
@@ -14,17 +14,14 @@ const HomeScreen = ({ navigation }) => {
             <Text style={styles.companyName}>Your Company</Text>
             <Text style={styles.tagline}>your tagline here</Text>
 
-         
             <TouchableOpacity style={styles.button} onPress={() => navigation.navigate("Login")}>
                 <Text style={styles.buttonText}>Sign in</Text>
             </TouchableOpacity>
 
-       
             <TouchableOpacity style={[styles.button, styles.signUpButton]} onPress={() => navigation.navigate("Register")}>
                 <Text style={[styles.buttonText, styles.signUpButtonText]}>Sign up</Text>
             </TouchableOpacity>
 
-  
             <Text style={styles.socialText}>Sign in with Social Media</Text>
         </LinearGradient>
     );

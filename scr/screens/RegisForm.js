@@ -146,18 +146,20 @@ const handleRegister = async () => {
             <Icon name = "lock" size = {20} color = "white" style={styles.icon} />
         </View> 
 
-        <View style = {styles.inputContainer}>
+        <View style={styles.inputContainer}>
         <TextInput
             style={[styles.button, errors.ConfirmPassword && styles.inputError]} // เปลี่ยนสีเส้นขอบเมื่อมี error
-            placeholder={errors.ConfirmPassword ? errors.ConfirmPassword : "Confirm Password"} // ถ้ามี error ให้ขึ้นข้อความแทน
+            placeholder={
+                errors.ConfirmPassword ? errors.ConfirmPassword : "Confirm Password"
+            } // ถ้ามี error ให้ขึ้นข้อความแทน
             placeholderTextColor={errors.ConfirmPassword ? "red" : "white"} // เปลี่ยนสี placeholder เป็นสีแดงถ้ามี error
             value={ConfirmPassword}
             onChangeText={(text) => setConfirmPassword(text)}
             secureTextEntry
             onBlur={() => validateField("ConfirmPassword", ConfirmPassword)}
         />
-            <Icon name="lock" size={20} color="white" style={styles.icon} />
-        </View>
+        <Icon name="lock" size={20} color="white" style={styles.icon} />
+    </View>
 
         <TouchableOpacity
             onPress={handleRegister}
