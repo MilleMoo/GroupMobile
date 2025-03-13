@@ -2,9 +2,10 @@ import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Image, TextInput, Switch, TouchableOpacity, Alert } from "react-native";
 import * as ImagePicker from 'expo-image-picker';
 import { MaterialIcons } from "@expo/vector-icons";
-import { EditUserName, GetUserName } from "../service/api";
+import { updateBioInDatabase, GetUserName } from "../../service/Api"; // Import API
+import AsyncStorage from '@react-native-async-storage/async-storage'; // Import AsyncStorage
 
-const ProfileScreen = ({route}) => {
+const ProfileScreen = ({ route }) => {
     const { user } = route.params || {}; 
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [name, setName] = useState("");
@@ -12,12 +13,30 @@ const ProfileScreen = ({route}) => {
     const [username, setUsername] = useState(user.Username || ""); 
     const [profileImage, setProfileImage] = useState("https://cdn.marvel.com/content/1x/349red_com_crd_01.png");
     const [isEditing, setIsEditing] = useState(false);
-    
-    const toggleSwitch = () => setIsDarkMode(!isDarkMode);
 
     useEffect(() => {
+        // Load dark mode preference from AsyncStorage
+        const loadDarkMode = async () => {
+            const storedMode = await AsyncStorage.getItem('darkMode');
+            if (storedMode !== null) {
+                setIsDarkMode(JSON.parse(storedMode)); // Set the mode based on the stored value
+            }
+        };
+
+        loadDarkMode();
         fetchUserData();
     }, []);
+
+    useEffect(() => {
+        // Save dark mode preference to AsyncStorage
+        const saveDarkMode = async () => {
+            await AsyncStorage.setItem('darkMode', JSON.stringify(isDarkMode));
+        };
+
+        saveDarkMode();
+    }, [isDarkMode]);
+
+    const toggleSwitch = () => setIsDarkMode(!isDarkMode);
 
     const fetchUserData = async () => {
         try {
@@ -25,28 +44,13 @@ const ProfileScreen = ({route}) => {
             console.log("Update response:", data); 
             if (data != null) {
                 setName(data.username);
-                setEmail(data.email)
+                setEmail(data.email);
+                setBio(data.Bio);
             }
         } catch (error) {
             console.error("Fetch error:", error);
         }
     };
-
-    const updateNameInDatabase = async (newName) => {
-        try {
-            const response = await EditUserName(username,newName)
-    
-            console.log("Update response:", response.data);
-    
-            setName(newName); 
-            setUsername(newName);
-            Alert.alert("Success", "Name updated successfully!");
-        } catch (error) {
-            console.error("Update error:", error.response?.data || error);
-            Alert.alert("Error", error.response?.data?.message || "Could not update name");
-        }
-    };
-
 
     const pickImage = async () => {
         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -64,6 +68,24 @@ const ProfileScreen = ({route}) => {
 
         if (!result.canceled) {
             setProfileImage(result.assets[0].uri);
+        }
+    };
+
+    const [bio, setBio] = useState("");  // Bio State
+    const [isEditingBio, setIsEditingBio] = useState(false);
+
+    const updateBio = async () => {
+        try {
+            const response = await updateBioInDatabase(username, bio); // ส่ง username และ bio ไปที่ API
+            if (response.message === "Bio updated successfully") {
+                setIsEditingBio(false); // ปิดโหมดการแก้ไข
+                Alert.alert("Success", "Bio updated successfully!");
+            } else {
+                throw new Error('Error updating bio');
+            }
+        } catch (error) {
+            console.error("Error updating bio:", error);
+            Alert.alert("Error", error.message);
         }
     };
 
@@ -88,10 +110,7 @@ const ProfileScreen = ({route}) => {
                             placeholder="Enter name"
                             placeholderTextColor={isDarkMode ? "#aaa" : "#555"}
                             autoFocus
-                            onBlur={() => {
-                                setIsEditing(false);
-                                updateNameInDatabase(name);
-                            }}
+                            onBlur={() => setIsEditing(false)}
                         />
                     ) : (
                         <TouchableOpacity style={styles.nameRow} onPress={() => setIsEditing(true)}>
@@ -109,6 +128,34 @@ const ProfileScreen = ({route}) => {
                 <Text style={[styles.username, isDarkMode ? styles.darkText : styles.lightText]}>
                     {Email}
                 </Text>
+            </View>
+    
+            {/* Bio Section */}
+            <View style={[styles.profileCard, isDarkMode ? styles.darkCard : styles.lightCard]}>
+                <View style={styles.bioContainer}>
+                    {isEditingBio ? (
+                        <TextInput
+                            style={[styles.bioInput, isDarkMode ? styles.darkText : styles.lightText]}
+                            value={bio}
+                            onChangeText={setBio}
+                            placeholder="Enter bio"
+                            placeholderTextColor={isDarkMode ? "#aaa" : "#555"}
+                            autoFocus
+                            multiline
+                        />
+                    ) : (
+                        <TouchableOpacity onPress={() => setIsEditingBio(true)}>
+                            <Text style={[styles.bioText, isDarkMode ? styles.darkText : styles.lightText]}>
+                                {bio || "Tap to add bio"}
+                            </Text>
+                        </TouchableOpacity>
+                    )}
+                    {isEditingBio && (
+                        <TouchableOpacity style={styles.updateButton} onPress={updateBio}>
+                            <Text style={styles.updateButtonText}>Update Bio</Text>
+                        </TouchableOpacity>
+                    )}
+                </View>
             </View>
         </View>
     );
@@ -183,7 +230,38 @@ const styles = StyleSheet.create({
     darkCard: {
         backgroundColor: "#1e1e1e",
     },
+    bioContainer: {
+        marginTop: 10,
+        width: "100%",
+        alignItems: "center",
+    },
+    bioText: {
+        fontSize: 14,
+        color: "gray",
+        textAlign: "center",
+        flexWrap: "wrap",
+        width: "80%",
+    },
+    bioInput: {
+        fontSize: 14,
+        textAlign: "center",
+        borderBottomWidth: 1,
+        borderColor: "gray",
+        width: "80%",
+        padding: 5,
+        flexWrap: "wrap",
+    },
+    updateButton: {
+        backgroundColor: "#007bff",
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 5,
+        marginTop: 10,
+    },
+    updateButtonText: {
+        color: "#fff",
+        fontSize: 16,
+    },
 });
-
 
 export default ProfileScreen;
