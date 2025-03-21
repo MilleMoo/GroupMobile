@@ -1,4 +1,4 @@
-import React ,{ useState } from "react";
+import React ,{ useState,useEffect } from "react";
 import { View, Text, StyleSheet, TextInput, Button, Alert,TouchableOpacity } from "react-native"
 import axios from "axios";
 import Icon from "react-native-vector-icons/Feather";
@@ -7,14 +7,16 @@ import { LoginUser } from "../service/api";
 import { EditUserName } from "../service/api";
 
 
-const LoginScreen = ({ navigation }) => {
-    const [Username, setUsername] = useState("");
+const LoginScreen = ({ navigation,route }) => {
+    const user = route.params?.user || {}; 
+    console.log(user.Username);
+    const [Username, setUsername] = useState(user?.Username || ""); 
     const [Password, setPassword] = useState("");
     const userData = {
         Username: Username,
         password: Password,
     };
-
+    
     const handleLogin = async () => {
         try {
             const response = await LoginUser(Username, Password);
@@ -35,7 +37,7 @@ const LoginScreen = ({ navigation }) => {
             <View style = {style.inputContainer}>
                 <TextInput
                     style = {style.button} // เปลี่ยนสีเส้นขอบเมื่อมี error
-                    placeholder = "Username" // ถ้ามี error ให้ขึ้นข้อความแทน
+                    placeholder = {(Username == "") ? "Username": Username} // ถ้ามี error ให้ขึ้นข้อความแทน
                     value = {Username}
                     onChangeText = {setUsername}
                 />
