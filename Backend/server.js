@@ -143,4 +143,37 @@ app.put("/update-Bio", (req, res) => {
   });
   
 
+  app.put("/update-password", async (req, res) => {
+    const { username, oldPassword, newPassword } = req.body;
+
+    if (!username || !oldPassword || !newPassword) {
+        return res.status(400).send({ message: "All fields are required" });
+    }
+
+    db.get(`SELECT * FROM users WHERE username = ?`, [username], async (err, user) => {
+        if (err) {
+            console.error("Database error:", err);
+            return res.status(500).json({ message: "Database error" });
+        }
+        if (!user || !(await bcrypt.compare(oldPassword, user.password))) {
+            return res.status(400).send({ message: "Old password is incorrect" });
+        }
+
+        const encryptedPassword = await bcrypt.hash(newPassword, 10);
+        db.run(
+            `UPDATE users SET password = ? WHERE username = ?`,
+            [encryptedPassword, username],
+            function (err) {
+                if (err) {
+                    console.error("Error updating password:", err);
+                    return res.status(500).send({ message: "Error updating password" });
+                }
+                res.send({ message: "Password updated successfully" });
+            }
+        );
+    });
+});
+
+
+
 app.listen(5000, () => console.log("Server running on port 5000"));
