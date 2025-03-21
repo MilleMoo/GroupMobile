@@ -100,5 +100,18 @@ export const registerUser = async (username, email,password) => {
             );
         }
     };
-  
-  
+
+    export const updatePassword = async (username, oldPassword, newPassword) => {
+        try {
+            const response = await axios.put(`${API_URL}/update-password`, {
+                username,
+                oldPassword,
+                newPassword,
+            });
+    
+            return response.data;
+        } catch (error) {
+            throw new Error(error.response?.data?.message || "Error updating password");
+        }
+    };
+    
