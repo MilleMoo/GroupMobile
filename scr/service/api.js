@@ -23,6 +23,7 @@ export const GetUserName = async (username) => {
         return {
             username: response.data.username,
             email: response.data.email,
+            bio: response.data.bio,
             profileImage: response.data.profileImage, 
         }; 
     } catch (error) {
