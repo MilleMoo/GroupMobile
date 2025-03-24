@@ -9,6 +9,8 @@ import { updatePassword } from "../service/api";
 
 const ProfileScreen = ({ navigation,route }) => {
     const { user } = route.params || {}; 
+    const [bio, setBio] = useState("");  
+    const [isEditingBio, setIsEditingBio] = useState(false);
     const [isDarkMode, setIsDarkMode] = useState(false);
     const [name, setName] = useState("");
     const [Email, setEmail] = useState("");
@@ -76,7 +78,7 @@ const ProfileScreen = ({ navigation,route }) => {
             if (data != null) {
                 setName(data.username);
                 setEmail(data.email);
-                setBio(data.Bio);
+                setBio(data.bio);
                 setProfileImage(data.profileImage); 
             }
         } catch (error) {
@@ -118,8 +120,6 @@ const ProfileScreen = ({ navigation,route }) => {
         }
     };
 
-    const [bio, setBio] = useState("");  
-    const [isEditingBio, setIsEditingBio] = useState(false);
 
     const updateBio = async () => {
         try {
@@ -177,10 +177,13 @@ const ProfileScreen = ({ navigation,route }) => {
                 </View>
     
                 <Text style={[styles.username, isDarkMode ? styles.darkText : styles.lightText]}>
-                    {username}
+                    Username: {username}
                 </Text>
                 <Text style={[styles.username, isDarkMode ? styles.darkText : styles.lightText]}>
-                    {Email}
+                    Email: {Email}
+                </Text>
+                <Text style={[styles.username, isDarkMode ? styles.darkText : styles.lightText]}>
+                    Bio: {bio}
                 </Text>
             </View>
     
@@ -299,7 +302,9 @@ const styles = StyleSheet.create({
     username: { 
         fontSize: 16, 
         color: "gray", 
-        marginTop: 5 
+        marginTop: 5,
+        textAlign: "left",
+        width: "100%",
     },
     lightText: {
         color: "#000",
