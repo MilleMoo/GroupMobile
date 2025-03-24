@@ -62,18 +62,9 @@ const LoginScreen = ({ navigation,route }) => {
                         </Text>
                     </View>
                 </TouchableOpacity>
-                <TouchableOpacity >
-                    <View style={style.FPassword}>
-                        <Text style={{ color: "white",fontSize: 20, }}>
-                            Forgot Password
-                        </Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            <View style={{ alignItems: "flex-end",marginTop: 50,}}>
                 <TouchableOpacity onPress={() => navigation.navigate("Register")}>
-                        <View style={style.FPassword}>
-                            <Text style={{ color: "white",fontSize: 20, }}>
+                        <View style={[style.FPassword,{borderRadius: 50, borderWidth: 1,borderColor: "white"}]}>
+                            <Text style={{ color: "white",fontSize: 20, fontWeight: "bold" }}>
                                 Sign Up
                             </Text>
                         </View>
@@ -114,7 +105,7 @@ const style = StyleSheet.create({
     FPassword:{
         borderRadius: 50,
         height: 50,
-        width: 170,
+        width: 140,
         justifyContent: "center",
         alignItems: "center",
         textAlign: "auto",
