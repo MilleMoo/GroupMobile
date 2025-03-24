@@ -98,6 +98,7 @@ app.get("/get-user", (req, res) => {
         res.json({
           username: user.username,
           email: user.email,
+          bio: user.Bio,
           profileImage: user.profile_image,
         });
     });
